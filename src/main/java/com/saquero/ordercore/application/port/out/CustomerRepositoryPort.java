@@ -6,5 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface CustomerRepositoryPort {
+    Customer save(Customer customer);
     Optional<Customer> findById(UUID id);
+    boolean existsByEmail(String email);
 }

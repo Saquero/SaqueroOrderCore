@@ -22,8 +22,20 @@ public class CustomerPersistenceAdapter implements CustomerRepositoryPort {
     }
 
     @Override
+    public Customer save(Customer customer) {
+        return customerMapper.toDomain(
+                customerJpaRepository.save(customerMapper.toEntity(customer))
+        );
+    }
+
+    @Override
     public Optional<Customer> findById(UUID id) {
         return customerJpaRepository.findById(id)
                 .map(customerMapper::toDomain);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return customerJpaRepository.existsByEmail(email);
     }
 }
