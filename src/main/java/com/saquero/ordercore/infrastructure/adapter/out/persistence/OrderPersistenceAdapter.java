@@ -2,11 +2,15 @@ package com.saquero.ordercore.infrastructure.adapter.out.persistence;
 
 import com.saquero.ordercore.application.port.out.OrderRepositoryPort;
 import com.saquero.ordercore.domain.model.Order;
+import com.saquero.ordercore.domain.model.OrderStatus;
 import com.saquero.ordercore.infrastructure.adapter.out.persistence.entity.OrderJpaEntity;
 import com.saquero.ordercore.infrastructure.adapter.out.persistence.mapper.OrderMapper;
 import com.saquero.ordercore.infrastructure.adapter.out.persistence.repository.OrderJpaRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -33,5 +37,24 @@ public class OrderPersistenceAdapter implements OrderRepositoryPort {
     public Optional<Order> findById(UUID id) {
         return orderJpaRepository.findById(id)
                 .map(orderMapper::toDomain);
+    }
+
+    @Override
+    public List<Order> findAll(OrderStatus status, int page, int size) {
+        PageRequest pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        if (status != null) {
+            return orderJpaRepository.findByStatus(status.name(), pageable)
+                    .stream().map(orderMapper::toDomain).toList();
+        }
+        return orderJpaRepository.findAll(pageable)
+                .stream().map(orderMapper::toDomain).toList();
+    }
+
+    @Override
+    public long countAll(OrderStatus status) {
+        if (status != null) {
+            return orderJpaRepository.countByStatus(status.name());
+        }
+        return orderJpaRepository.count();
     }
 }
