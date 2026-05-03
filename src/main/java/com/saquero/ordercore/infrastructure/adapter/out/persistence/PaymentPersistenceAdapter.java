@@ -7,6 +7,9 @@ import com.saquero.ordercore.infrastructure.adapter.out.persistence.mapper.Payme
 import com.saquero.ordercore.infrastructure.adapter.out.persistence.repository.PaymentJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.UUID;
+
 @Component
 public class PaymentPersistenceAdapter implements PaymentRepositoryPort {
 
@@ -24,5 +27,13 @@ public class PaymentPersistenceAdapter implements PaymentRepositoryPort {
         PaymentJpaEntity entity = paymentMapper.toEntity(payment);
         PaymentJpaEntity saved = paymentJpaRepository.save(entity);
         return paymentMapper.toDomain(saved);
+    }
+
+    @Override
+    public List<Payment> findByOrderId(UUID orderId) {
+        return paymentJpaRepository.findByOrderIdOrderByCreatedAtDesc(orderId)
+                .stream()
+                .map(paymentMapper::toDomain)
+                .toList();
     }
 }

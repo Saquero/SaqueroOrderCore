@@ -7,6 +7,7 @@ import com.saquero.ordercore.application.dto.PageResponse;
 import com.saquero.ordercore.application.dto.PaymentResponse;
 import com.saquero.ordercore.application.port.in.CreateOrderUseCase;
 import com.saquero.ordercore.application.port.in.GetOrderUseCase;
+import com.saquero.ordercore.application.port.in.GetPaymentsByOrderUseCase;
 import com.saquero.ordercore.application.port.in.ListOrdersUseCase;
 import com.saquero.ordercore.application.port.in.ProcessPaymentUseCase;
 import com.saquero.ordercore.domain.model.OrderStatus;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -32,15 +34,18 @@ public class OrderController {
     private final GetOrderUseCase getOrderUseCase;
     private final ListOrdersUseCase listOrdersUseCase;
     private final ProcessPaymentUseCase processPaymentUseCase;
+    private final GetPaymentsByOrderUseCase getPaymentsByOrderUseCase;
 
     public OrderController(CreateOrderUseCase createOrderUseCase,
                            GetOrderUseCase getOrderUseCase,
                            ListOrdersUseCase listOrdersUseCase,
-                           ProcessPaymentUseCase processPaymentUseCase) {
+                           ProcessPaymentUseCase processPaymentUseCase,
+                           GetPaymentsByOrderUseCase getPaymentsByOrderUseCase) {
         this.createOrderUseCase = createOrderUseCase;
         this.getOrderUseCase = getOrderUseCase;
         this.listOrdersUseCase = listOrdersUseCase;
         this.processPaymentUseCase = processPaymentUseCase;
+        this.getPaymentsByOrderUseCase = getPaymentsByOrderUseCase;
     }
 
     @PostMapping
@@ -69,7 +74,11 @@ public class OrderController {
 
     @PostMapping("/{id}/pay")
     public ResponseEntity<PaymentResponse> processPayment(@PathVariable UUID id) {
-        ProcessPaymentCommand command = new ProcessPaymentCommand(id);
-        return ResponseEntity.ok(processPaymentUseCase.execute(command));
+        return ResponseEntity.ok(processPaymentUseCase.execute(new ProcessPaymentCommand(id)));
+    }
+
+    @GetMapping("/{id}/payments")
+    public ResponseEntity<List<PaymentResponse>> getPayments(@PathVariable UUID id) {
+        return ResponseEntity.ok(getPaymentsByOrderUseCase.execute(id));
     }
 }
