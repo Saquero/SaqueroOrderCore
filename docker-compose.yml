@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: saquero_ordercore_db
+    environment:
+      POSTGRES_DB: ordercore
+      POSTGRES_USER: ordercore_user
+      POSTGRES_PASSWORD: ordercore_pass
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
