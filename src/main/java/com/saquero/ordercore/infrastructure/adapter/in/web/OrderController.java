@@ -10,6 +10,7 @@ import com.saquero.ordercore.application.port.in.GetOrderUseCase;
 import com.saquero.ordercore.application.port.in.GetPaymentsByOrderUseCase;
 import com.saquero.ordercore.application.port.in.ListOrdersUseCase;
 import com.saquero.ordercore.application.port.in.ProcessPaymentUseCase;
+import com.saquero.ordercore.domain.exception.OrderDomainException;
 import com.saquero.ordercore.domain.model.OrderStatus;
 import com.saquero.ordercore.infrastructure.adapter.in.web.request.CreateOrderRequest;
 import jakarta.validation.Valid;
@@ -29,6 +30,8 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
+
+    private static final int MAX_PAGE_SIZE = 50;
 
     private final CreateOrderUseCase createOrderUseCase;
     private final GetOrderUseCase getOrderUseCase;
@@ -63,6 +66,12 @@ public class OrderController {
             @RequestParam(required = false) String status,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
+        if (size > MAX_PAGE_SIZE) {
+            throw new OrderDomainException("Page size must not exceed " + MAX_PAGE_SIZE);
+        }
+        if (page < 0) {
+            throw new OrderDomainException("Page index must not be negative");
+        }
         OrderStatus orderStatus = status != null ? OrderStatus.valueOf(status.toUpperCase()) : null;
         return ResponseEntity.ok(listOrdersUseCase.execute(orderStatus, page, size));
     }
