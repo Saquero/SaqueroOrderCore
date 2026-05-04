@@ -8,6 +8,7 @@ import com.saquero.ordercore.application.dto.OrderResponse;
 import com.saquero.ordercore.application.port.in.CreateCustomerUseCase;
 import com.saquero.ordercore.application.port.in.CreateOrderUseCase;
 import com.saquero.ordercore.application.port.in.ProcessPaymentUseCase;
+import com.saquero.ordercore.application.port.out.CustomerRepositoryPort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -26,17 +27,25 @@ public class DevDataInitializer implements ApplicationRunner {
     private final CreateCustomerUseCase createCustomerUseCase;
     private final CreateOrderUseCase createOrderUseCase;
     private final ProcessPaymentUseCase processPaymentUseCase;
+    private final CustomerRepositoryPort customerRepositoryPort;
 
     public DevDataInitializer(CreateCustomerUseCase createCustomerUseCase,
                               CreateOrderUseCase createOrderUseCase,
-                              ProcessPaymentUseCase processPaymentUseCase) {
+                              ProcessPaymentUseCase processPaymentUseCase,
+                              CustomerRepositoryPort customerRepositoryPort) {
         this.createCustomerUseCase = createCustomerUseCase;
         this.createOrderUseCase = createOrderUseCase;
         this.processPaymentUseCase = processPaymentUseCase;
+        this.customerRepositoryPort = customerRepositoryPort;
     }
 
     @Override
     public void run(ApplicationArguments args) {
+        if (customerRepositoryPort.existsByEmail("alice@dev.com")) {
+            log.info("=== Dev seed data already loaded, skipping ===");
+            return;
+        }
+
         log.info("=== Loading dev seed data ===");
 
         CustomerResponse customer1 = createCustomerUseCase.execute(

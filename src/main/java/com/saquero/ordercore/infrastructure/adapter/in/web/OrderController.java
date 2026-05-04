@@ -3,9 +3,11 @@ package com.saquero.ordercore.infrastructure.adapter.in.web;
 import com.saquero.ordercore.application.command.CreateOrderCommand;
 import com.saquero.ordercore.application.command.ProcessPaymentCommand;
 import com.saquero.ordercore.application.dto.OrderResponse;
+import com.saquero.ordercore.application.dto.OrderSummaryResponse;
 import com.saquero.ordercore.application.dto.PageResponse;
 import com.saquero.ordercore.application.dto.PaymentResponse;
 import com.saquero.ordercore.application.port.in.CreateOrderUseCase;
+import com.saquero.ordercore.application.port.in.GetOrderSummaryUseCase;
 import com.saquero.ordercore.application.port.in.GetOrderUseCase;
 import com.saquero.ordercore.application.port.in.GetPaymentsByOrderUseCase;
 import com.saquero.ordercore.application.port.in.ListOrdersUseCase;
@@ -38,17 +40,20 @@ public class OrderController {
     private final ListOrdersUseCase listOrdersUseCase;
     private final ProcessPaymentUseCase processPaymentUseCase;
     private final GetPaymentsByOrderUseCase getPaymentsByOrderUseCase;
+    private final GetOrderSummaryUseCase getOrderSummaryUseCase;
 
     public OrderController(CreateOrderUseCase createOrderUseCase,
                            GetOrderUseCase getOrderUseCase,
                            ListOrdersUseCase listOrdersUseCase,
                            ProcessPaymentUseCase processPaymentUseCase,
-                           GetPaymentsByOrderUseCase getPaymentsByOrderUseCase) {
+                           GetPaymentsByOrderUseCase getPaymentsByOrderUseCase,
+                           GetOrderSummaryUseCase getOrderSummaryUseCase) {
         this.createOrderUseCase = createOrderUseCase;
         this.getOrderUseCase = getOrderUseCase;
         this.listOrdersUseCase = listOrdersUseCase;
         this.processPaymentUseCase = processPaymentUseCase;
         this.getPaymentsByOrderUseCase = getPaymentsByOrderUseCase;
+        this.getOrderSummaryUseCase = getOrderSummaryUseCase;
     }
 
     @PostMapping
@@ -74,6 +79,11 @@ public class OrderController {
         }
         OrderStatus orderStatus = status != null ? OrderStatus.valueOf(status.toUpperCase()) : null;
         return ResponseEntity.ok(listOrdersUseCase.execute(orderStatus, page, size));
+    }
+
+    @GetMapping("/summary")
+    public ResponseEntity<OrderSummaryResponse> getOrderSummary() {
+        return ResponseEntity.ok(getOrderSummaryUseCase.execute());
     }
 
     @GetMapping("/{id}")

@@ -10,7 +10,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -56,5 +58,13 @@ public class OrderPersistenceAdapter implements OrderRepositoryPort {
             return orderJpaRepository.countByStatus(status.name());
         }
         return orderJpaRepository.count();
+    }
+
+    @Override
+    public Map<String, Long> countByStatus() {
+        Map<String, Long> result = new HashMap<>();
+        orderJpaRepository.countGroupByStatus()
+                .forEach(row -> result.put((String) row[0], (Long) row[1]));
+        return result;
     }
 }

@@ -4,6 +4,7 @@ import com.saquero.ordercore.domain.model.Order;
 import com.saquero.ordercore.domain.model.OrderStatus;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,4 +13,5 @@ public interface OrderRepositoryPort {
     Optional<Order> findById(UUID id);
     List<Order> findAll(OrderStatus status, int page, int size);
     long countAll(OrderStatus status);
+    Map<String, Long> countByStatus();
 }
