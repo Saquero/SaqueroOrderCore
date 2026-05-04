@@ -24,7 +24,6 @@ public class Order {
         this.updatedAt = createdAt;
     }
 
-    // Constructor para reconstruir desde persistencia
     public Order(UUID id, UUID customerId, OrderStatus status, Money totalAmount,
                  LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
@@ -62,6 +61,16 @@ public class Order {
             );
         }
         this.status = OrderStatus.FAILED;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void cancel() {
+        if (this.status != OrderStatus.CREATED) {
+            throw new InvalidOrderStateTransitionException(
+                this.status.name(), OrderStatus.CANCELLED.name()
+            );
+        }
+        this.status = OrderStatus.CANCELLED;
         this.updatedAt = LocalDateTime.now();
     }
 

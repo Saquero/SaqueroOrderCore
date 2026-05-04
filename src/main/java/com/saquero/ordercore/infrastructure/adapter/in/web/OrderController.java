@@ -6,6 +6,7 @@ import com.saquero.ordercore.application.dto.OrderResponse;
 import com.saquero.ordercore.application.dto.OrderSummaryResponse;
 import com.saquero.ordercore.application.dto.PageResponse;
 import com.saquero.ordercore.application.dto.PaymentResponse;
+import com.saquero.ordercore.application.port.in.CancelOrderUseCase;
 import com.saquero.ordercore.application.port.in.CreateOrderUseCase;
 import com.saquero.ordercore.application.port.in.GetOrderSummaryUseCase;
 import com.saquero.ordercore.application.port.in.GetOrderUseCase;
@@ -41,19 +42,22 @@ public class OrderController {
     private final ProcessPaymentUseCase processPaymentUseCase;
     private final GetPaymentsByOrderUseCase getPaymentsByOrderUseCase;
     private final GetOrderSummaryUseCase getOrderSummaryUseCase;
+    private final CancelOrderUseCase cancelOrderUseCase;
 
     public OrderController(CreateOrderUseCase createOrderUseCase,
                            GetOrderUseCase getOrderUseCase,
                            ListOrdersUseCase listOrdersUseCase,
                            ProcessPaymentUseCase processPaymentUseCase,
                            GetPaymentsByOrderUseCase getPaymentsByOrderUseCase,
-                           GetOrderSummaryUseCase getOrderSummaryUseCase) {
+                           GetOrderSummaryUseCase getOrderSummaryUseCase,
+                           CancelOrderUseCase cancelOrderUseCase) {
         this.createOrderUseCase = createOrderUseCase;
         this.getOrderUseCase = getOrderUseCase;
         this.listOrdersUseCase = listOrdersUseCase;
         this.processPaymentUseCase = processPaymentUseCase;
         this.getPaymentsByOrderUseCase = getPaymentsByOrderUseCase;
         this.getOrderSummaryUseCase = getOrderSummaryUseCase;
+        this.cancelOrderUseCase = cancelOrderUseCase;
     }
 
     @PostMapping
@@ -94,6 +98,11 @@ public class OrderController {
     @PostMapping("/{id}/pay")
     public ResponseEntity<PaymentResponse> processPayment(@PathVariable UUID id) {
         return ResponseEntity.ok(processPaymentUseCase.execute(new ProcessPaymentCommand(id)));
+    }
+
+    @PostMapping("/{id}/cancel")
+    public ResponseEntity<OrderResponse> cancelOrder(@PathVariable UUID id) {
+        return ResponseEntity.ok(cancelOrderUseCase.execute(id));
     }
 
     @GetMapping("/{id}/payments")
