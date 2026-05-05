@@ -67,4 +67,12 @@ public class OrderPersistenceAdapter implements OrderRepositoryPort {
                 .forEach(row -> result.put((String) row[0], (Long) row[1]));
         return result;
     }
+
+    @Override
+    public List<Order> findByCustomerId(UUID customerId) {
+        return orderJpaRepository.findByCustomerIdOrderByCreatedAtDesc(customerId)
+                .stream()
+                .map(orderMapper::toDomain)
+                .toList();
+    }
 }

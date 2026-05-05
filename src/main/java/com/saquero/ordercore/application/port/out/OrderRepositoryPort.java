@@ -14,4 +14,5 @@ public interface OrderRepositoryPort {
     List<Order> findAll(OrderStatus status, int page, int size);
     long countAll(OrderStatus status);
     Map<String, Long> countByStatus();
+    List<Order> findByCustomerId(UUID customerId);
 }
