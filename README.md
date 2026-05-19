@@ -1,251 +1,284 @@
 <p align="center">
-  <img src="assets/logo-saquero-gateway.svg" alt="SaqueroGateway" width="180"/>
+  <img src="assets/logo-saquero-ordercore.svg" width="130"/>
 </p>
 
-<h1 align="center">SaqueroGateway</h1>
-<p align="center">API Gateway -- .NET 8 · YARP · JWT Validation · Rate Limiting · Correlation ID</p>
+<h1 align="center">SaqueroOrderCore</h1>
+<p align="center">
+  Backend for order lifecycle management Ã¢â‚¬â€ Java 21 Ã‚Â· Spring Boot 3 Ã‚Â· Hexagonal Architecture Ã‚Â· DDD
+</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/.NET-8.0-512BD4?style=flat-square&logo=dotnet" />
-  <img src="https://img.shields.io/badge/YARP-2.3-blueviolet?style=flat-square" />
-  <img src="https://img.shields.io/badge/Auth-JWT-green?style=flat-square" />
-  <img src="https://img.shields.io/badge/Logging-Serilog-informational?style=flat-square" />
-  <img src="https://img.shields.io/badge/Status-Active-success?style=flat-square" />
+  <img src="https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=java"/>
+  <img src="https://img.shields.io/badge/Spring%20Boot-3.4.5-brightgreen?style=flat-square&logo=springboot"/>
+  <img src="https://img.shields.io/badge/PostgreSQL-16-blue?style=flat-square&logo=postgresql"/>
+  <img src="https://img.shields.io/badge/Tests-19%20passing-success?style=flat-square"/>
+  <img src="https://img.shields.io/badge/Architecture-Hexagonal-informational?style=flat-square"/>
 </p>
 
 ---
 
-## What is SaqueroGateway?
+## What is this?
 
-SaqueroGateway is the single entry point for the Saquero backend ecosystem.
+SaqueroOrderCore is a production-style backend that manages the full lifecycle of orders:
+creating orders, processing payments, cancelling orders and tracking payment history.
 
-It acts as a production-style API Gateway that validates JWT tokens, applies rate limiting, propagates correlation IDs, logs every request and routes traffic to the correct downstream service -- all before a single line of business logic runs.
-
-This is not a CRUD. It is infrastructure that demonstrates real system design thinking.
-
----
-
-## Ecosystem Architecture
-
-```text
-                   +----------------------+
-                   |   SaqueroGateway     |
-                   |   :5100              |
-                   |                      |
-                   |  JWT Validation      |
-                   |  Rate Limiting       |
-                   |  Correlation ID      |
-                   |  Request Logging     |
-                   |  Error Handling      |
-                   +----------+-----------+
-                              |
-          +-------------------+-------------------+
-          |                   |                   |
-+---------+--------+ +--------+--------+ +--------+---------+
-|  SaqueroCloud    | | SaqueroOrderCore| |  SaqueroJobs     |
-|  :5000           | | :8080           | |  :5200           |
-|  .NET 8 + React  | | Java 21         | |  .NET 8          |
-|  SaaS Platform   | | Spring Boot 3   | |  Job Engine      |
-+------------------+ +-----------------+ +------------------+
-```
+Built as a portfolio project to demonstrate real backend engineering practices:
+clean architecture, domain-driven design, testable code and professional API design.
 
 ---
 
 ## Preview
 
-### Gateway health check
+### Swagger UI Ã¢â‚¬â€ All endpoints documented
+
+![Swagger UI](assets/swagger-ui.png)
+
+### pgAdmin Ã¢â‚¬â€ Database tables with real data
+
+![pgAdmin](assets/pgadmin.png)
+
+### Health Check Ã¢â‚¬â€ PostgreSQL status via Actuator
 
 ![Health Check](assets/health-check.png)
 
-### Downstream services monitoring
+### Orders Summary Ã¢â‚¬â€ Real-time order count by status
 
-![Downstream Health](assets/downstream-health.png)
-
-### Routing request through gateway
-
-![Routing](assets/routing.png)
-
----
-
-## Key Design Decisions
-
-**YARP over custom proxy.** Microsoft YARP (Yet Another Reverse Proxy) is used in production .NET systems. It provides declarative route configuration, transform pipeline, and full ASP.NET Core middleware integration.
-
-**JWT validation only, no issuance.** The gateway validates tokens but never creates them. Token issuance is the responsibility of SaqueroCloud. This separation mirrors real microservice auth patterns.
-
-**Correlation ID propagates across the chain.** Every request gets a `X-Correlation-Id` header -- generated if absent, reused if present. It appears in logs and response headers, making distributed tracing possible without a full observability stack.
-
-**Middleware order is intentional.** Error handling wraps everything. Correlation ID is set before logging. Rate limiting runs before auth. This order mirrors production gateway pipelines.
-
-**Downstream health is observable.** `/health/downstream` checks all three services independently and always returns 200 with per-service status -- degraded services are visible without breaking the health endpoint itself.
+![Orders Summary](assets/orders-summary.png)
 
 ---
 
 ## Tech Stack
 
-| Technology    | Version  | Role                          |
-| ------------- | -------- | ----------------------------- |
-| .NET          | 8.0      | Runtime                       |
-| C#            | 12       | Language                      |
-| ASP.NET Core  | 8.0      | Web framework                 |
-| YARP          | 2.3.0    | Reverse proxy / routing       |
-| JWT Bearer    | 8.0.0    | Token validation              |
-| Serilog       | 4.x      | Structured logging            |
-| Rate Limiter  | built-in | Fixed window rate limiting    |
-| Health Checks | built-in | Downstream service monitoring |
+| Technology     | Version | Role                 |
+| -------------- | ------- | -------------------- |
+| Java           | 21      | Language             |
+| Spring Boot    | 3.4.5   | Framework            |
+| PostgreSQL     | 16      | Database             |
+| Flyway         | 10.x    | Schema migrations    |
+| Docker Compose | v2      | Local infrastructure |
+| JUnit 5        | 5.11.x  | Testing              |
+| Mockito        | 5.x     | Mocking in tests     |
+| Springdoc      | 2.8.x   | OpenAPI / Swagger UI |
+| Maven          | wrapper | Build tool           |
 
 ---
 
-## Routing
+## Architecture
 
-| Gateway Route                   | Destination                    |
-| ------------------------------- | ------------------------------ |
-| `/gateway/cloud/{**catch-all}`  | `http://localhost:5000/{path}` |
-| `/gateway/orders/{**catch-all}` | `http://localhost:8080/{path}` |
-| `/gateway/jobs/{**catch-all}`   | `http://localhost:5200/{path}` |
+Hexagonal Architecture + Clean Architecture + Tactical DDD.
 
-All routes require a valid JWT. Public routes (`/health`, `/health/downstream`) are anonymous.
+```
+Ã¢â€Å’Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Â
+Ã¢â€â€š          Infrastructure             Ã¢â€â€š
+Ã¢â€â€š  (Controllers, JPA, Config)         Ã¢â€â€š
+Ã¢â€â€š                                     Ã¢â€â€š
+Ã¢â€â€š      Ã¢â€Å’Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Â       Ã¢â€â€š
+Ã¢â€â€š      Ã¢â€â€š     Application      Ã¢â€â€š       Ã¢â€â€š
+Ã¢â€â€š      Ã¢â€â€š  (Use Cases, Ports)  Ã¢â€â€š       Ã¢â€â€š
+Ã¢â€â€š      Ã¢â€â€š                      Ã¢â€â€š       Ã¢â€â€š
+Ã¢â€â€š      Ã¢â€â€š   Ã¢â€Å’Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Â   Ã¢â€â€š       Ã¢â€â€š
+Ã¢â€â€š      Ã¢â€â€š   Ã¢â€â€š    Domain    Ã¢â€â€š   Ã¢â€â€š       Ã¢â€â€š
+Ã¢â€â€š      Ã¢â€â€š   Ã¢â€â€š  (pure Java) Ã¢â€â€š   Ã¢â€â€š       Ã¢â€â€š
+Ã¢â€â€š      Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Ëœ   Ã¢â€â€š       Ã¢â€â€š
+Ã¢â€â€š      Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Ëœ       Ã¢â€â€š
+Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Ëœ
+```
+
+- **Domain** Ã¢â‚¬â€ pure Java, no framework dependencies, owns all business rules
+- **Application** Ã¢â‚¬â€ use cases, ports (interfaces), commands, DTOs
+- **Infrastructure** Ã¢â‚¬â€ JPA entities, Spring Data, REST controllers, mappers
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed design decisions.
+
+---
+
+## Order State Machine
+
+```
+CREATED Ã¢â€ â€™ PROCESSING Ã¢â€ â€™ PAID
+CREATED Ã¢â€ â€™ PROCESSING Ã¢â€ â€™ FAILED
+CREATED Ã¢â€ â€™ CANCELLED
+```
+
+State transitions are enforced by the domain model.
+Any invalid transition throws `InvalidOrderStateTransitionException`.
+
+---
+
+## Getting Started (Windows)
+
+### Requirements
+
+- Java 21 (`java -version`)
+- Docker Desktop running
+- PowerShell
+
+### 1. Clone the repo
+
+```powershell
+git clone https://github.com/Saquero/SaqueroOrderCore.git
+cd SaqueroOrderCore
+```
+
+### 2. Start infrastructure
+
+```powershell
+docker compose up -d
+```
+
+### 3. Run the application
+
+```powershell
+# Standard mode
+.\mvnw.cmd spring-boot:run
+
+# Dev mode (loads seed data automatically)
+.\mvnw.cmd spring-boot:run "-Dspring-boot.run.profiles=dev"
+```
+
+App available at: `http://localhost:8080`
+
+### 4. Open Swagger UI
+
+```
+http://localhost:8080/swagger-ui/index.html
+```
+
+### 5. Open pgAdmin (visual DB)
+
+```
+http://localhost:5050
+```
+
+Login: `admin@saquero.com` / `admin`
+
+Connect to server:
+
+- Host: `postgres`
+- Port: `5432`
+- Database: `ordercore`
+- Username: `ordercore_user`
+- Password: `ordercore_pass`
+
+### Stop everything
+
+```powershell
+docker compose down
+```
 
 ---
 
 ## API Endpoints
 
-| Method | Endpoint           | Auth | Description                    |
-| ------ | ------------------ | ---- | ------------------------------ |
-| GET    | /health            | None | Gateway health check           |
-| GET    | /health/downstream | None | All downstream services status |
-| ANY    | /gateway/cloud/**  | JWT  | Proxy to SaqueroCloud          |
-| ANY    | /gateway/orders/** | JWT  | Proxy to SaqueroOrderCore      |
-| ANY    | /gateway/jobs/**   | JWT  | Proxy to SaqueroJobs           |
+| Method | Path                   | Description                   |
+| ------ | ---------------------- | ----------------------------- |
+| POST   | /customers             | Create customer               |
+| GET    | /customers/{id}        | Get customer by ID            |
+| GET    | /customers/{id}/orders | Get all orders for a customer |
+| POST   | /orders                | Create order                  |
+| GET    | /orders                | List orders (with pagination) |
+| GET    | /orders?status=CREATED | Filter orders by status       |
+| GET    | /orders/summary        | Order count by status         |
+| GET    | /orders/{id}           | Get order by ID               |
+| POST   | /orders/{id}/pay       | Process payment               |
+| POST   | /orders/{id}/cancel    | Cancel order                  |
+| GET    | /orders/{id}/payments  | Payment history for order     |
+| GET    | /actuator/health       | Health check with DB status   |
 
 ---
 
-## Getting Started
+## Example Requests
 
-### Requirements
-
-- .NET 8 SDK
-- SaqueroCloud running on :5000 (for JWT token generation)
-
-### Run
-
-```bash
-git clone https://github.com/Saquero/SaqueroGateway.git
-cd SaqueroGateway/SaqueroGateway.Api
-dotnet user-secrets set "JwtSettings:SecretKey" "your-secret-key"
-dotnet run --launch-profile http
-```
-
-Gateway available at: `http://localhost:5100`
-
-Health check: `http://localhost:5100/health`
-
-Downstream health: `http://localhost:5100/health/downstream`
-
-### Example Requests
+### Create a customer
 
 ```powershell
-# Get a JWT token from SaqueroCloud
-$token = (Invoke-RestMethod -Method POST -Uri "http://localhost:5000/api/auth/login" `
+Invoke-RestMethod -Method Post -Uri "http://localhost:8080/customers" `
   -ContentType "application/json" `
-  -Body '{"email":"admin@saquero.com","password":"Admin123!"}').token
+  -Body '{"name": "John Doe", "email": "john@example.com"}' | ConvertTo-Json
+```
 
-# Route request through gateway to SaqueroCloud
-Invoke-RestMethod -Uri "http://localhost:5100/gateway/cloud/api/subscription-plans" `
-  -Headers @{ Authorization = "Bearer $token" }
+### Create an order
 
-# Route request through gateway to SaqueroJobs
-Invoke-RestMethod -Uri "http://localhost:5100/gateway/jobs/api/jobs" `
-  -Headers @{ Authorization = "Bearer $token" }
+```powershell
+Invoke-RestMethod -Method Post -Uri "http://localhost:8080/orders" `
+  -ContentType "application/json" `
+  -Body '{"customerId": "YOUR-CUSTOMER-UUID", "totalAmount": 99.99, "currency": "EUR"}' | ConvertTo-Json
+```
 
-# Check downstream health
-Invoke-RestMethod -Uri "http://localhost:5100/health/downstream"
+### Process payment
+
+```powershell
+Invoke-RestMethod -Method Post -Uri "http://localhost:8080/orders/YOUR-ORDER-UUID/pay" | ConvertTo-Json
+```
+
+### Cancel order
+
+```powershell
+Invoke-RestMethod -Method Post -Uri "http://localhost:8080/orders/YOUR-ORDER-UUID/cancel" | ConvertTo-Json
+```
+
+### Order summary
+
+```powershell
+Invoke-RestMethod -Method Get -Uri "http://localhost:8080/orders/summary" | ConvertTo-Json
 ```
 
 ---
 
-## Middleware Pipeline
+## Running Tests
 
-```text
-Request
-  |
-  v
-ErrorHandlingMiddleware     <- catches all unhandled exceptions
-  |
-  v
-CorrelationIdMiddleware     <- assigns X-Correlation-Id
-  |
-  v
-RequestLoggingMiddleware    <- logs method, path, status, duration
-  |
-  v
-RateLimiter                 <- 100 req/min per IP (fixed window)
-  |
-  v
-Authentication              <- validates JWT signature + claims
-  |
-  v
-Authorization               <- enforces "authenticated" policy
-  |
-  v
-YARP ReverseProxy           <- routes to downstream service
+```powershell
+.\mvnw.cmd test
 ```
+
+Current test suite: **19 tests, 0 failures**
+
+- `OrderTest` Ã¢â‚¬â€ 7 tests, all state transitions including invalid ones
+- `MoneyTest` Ã¢â‚¬â€ 8 tests, value object invariants and edge cases
+- `ProcessPaymentUseCaseTest` Ã¢â‚¬â€ 3 tests with mocked ports
 
 ---
 
-## Rate Limiting
+## Prepared for Kafka
 
-| Policy | Limit       | Scope  | Rejection |
-| ------ | ----------- | ------ | --------- |
-| global | 100 req/min | Per IP | 429       |
+The `infrastructure/adapter/out/events` package is ready for domain event publishing.
+
+When a message broker is integrated, events like `OrderPaidEvent`, `OrderFailedEvent`
+and `OrderCancelledEvent` will be published after state transitions Ã¢â‚¬â€ following
+either direct publish or the Outbox pattern.
+
+No domain changes required to add this.
+
+---
+
+## Project Structure
+
+```
+src/main/java/com/saquero/ordercore
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ domain
+Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ model          Order, Customer, Payment, OrderStatus, PaymentStatus
+Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ valueobject    Money
+Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ exception      OrderDomainException, InvalidOrderStateTransitionException
+Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ application
+Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ port/in        Use case interfaces
+Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ port/out       Repository port interfaces
+Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ command        CreateOrderCommand, ProcessPaymentCommand...
+Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ dto            OrderResponse, PaymentResponse, PageResponse...
+Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ usecase        Use case implementations
+Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ infrastructure
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ adapter/in/web      REST controllers, request DTOs
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ adapter/out/persistence  JPA entities, repositories, mappers
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ adapter/out/events  Prepared for Kafka
+    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ config              OpenAPI, CorrelationId filter, Dev initializer
+    Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ exception           GlobalExceptionHandler, ApiError
+```
 
 ---
 
 ## Part of the Saquero Backend Ecosystem
 
-| Project                                                         | Stack                   | Description                                            |
-| --------------------------------------------------------------- | ----------------------- | ------------------------------------------------------ |
-| [SaqueroCloud](https://github.com/Saquero/SaqueroCloud)         | .NET 8 + React          | SaaS admin platform, JWT auth, subscription management |
-| [SaqueroOrderCore](https://github.com/Saquero/SaqueroOrderCore) | Java 21 + Spring Boot 3 | Order lifecycle backend, DDD, Hexagonal                |
-| [SaqueroJobs](https://github.com/Saquero/SaqueroJobs)           | .NET 8                  | Background job processing engine                       |
-| SaqueroGateway                                                  | .NET 8                  | API Gateway -- single entry point                      |
-
----
-
-## Ecosystem Health
-
-| Service          | Port | Health           |
-| ---------------- | ---- | ---------------- |
-| SaqueroGateway   | 5100 | /health          |
-| SaqueroCloud     | 5000 | /health          |
-| SaqueroOrderCore | 8080 | /actuator/health |
-| SaqueroJobs      | 5200 | /health          |
-
----
-
-## Future Improvements
-
-- Header propagation (X-User-Id, X-Tenant-Id) to downstream services
-- Per-user rate limiting using JWT claims
-- Request/response transformation pipeline
-- Docker Compose for full ecosystem
-- Integration tests with TestContainers
-- Prometheus metrics endpoint
-
----
-
-See [ARCHITECTURE.md](ARCHITECTURE.md) for full design documentation.
-
----
-
-<p align="center">
-  <a href="https://linkedin.com/in/manusaquero">
-    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
-  </a>
-  <a href="mailto:manusaquero@gmail.com">
-    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
-  </a>
-  <a href="https://github.com/Saquero">
-    <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" />
-  </a>
-</p>
+| Project                                                 | Stack            | Description                   |
+| ------------------------------------------------------- | ---------------- | ----------------------------- |
+| [SaqueroCloud](https://github.com/Saquero/SaqueroCloud) | .NET 8 + React   | SaaS admin platform, JWT auth |
+| SaqueroOrderCore                                                | Java 21 + Spring Boot 3 | Order lifecycle backend, DDD, Hexagonal                |
+| [SaqueroGateway](https://github.com/Saquero/SaqueroGateway)     | .NET 8                  | API Gateway -- single entry point                      |
