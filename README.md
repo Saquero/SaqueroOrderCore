@@ -4,7 +4,7 @@
 
 <h1 align="center">SaqueroOrderCore</h1>
 <p align="center">
-  Backend for order lifecycle management Ã¢â‚¬â€ Java 21 Ã‚Â· Spring Boot 3 Ã‚Â· Hexagonal Architecture Ã‚Â· DDD
+  Backend for order lifecycle management -- Java 21 · Spring Boot 3 · Hexagonal Architecture · DDD
 </p>
 
 <p align="center">
@@ -29,19 +29,19 @@ clean architecture, domain-driven design, testable code and professional API des
 
 ## Preview
 
-### Swagger UI Ã¢â‚¬â€ All endpoints documented
+### Swagger UI -- All endpoints documented
 
 ![Swagger UI](assets/swagger-ui.png)
 
-### pgAdmin Ã¢â‚¬â€ Database tables with real data
+### pgAdmin -- Database tables with real data
 
 ![pgAdmin](assets/pgadmin.png)
 
-### Health Check Ã¢â‚¬â€ PostgreSQL status via Actuator
+### Health Check -- PostgreSQL status via Actuator
 
 ![Health Check](assets/health-check.png)
 
-### Orders Summary Ã¢â‚¬â€ Real-time order count by status
+### Orders Summary -- Real-time order count by status
 
 ![Orders Summary](assets/orders-summary.png)
 
@@ -67,26 +67,26 @@ clean architecture, domain-driven design, testable code and professional API des
 
 Hexagonal Architecture + Clean Architecture + Tactical DDD.
 
-```
-Ã¢â€Å’Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Â
-Ã¢â€â€š          Infrastructure             Ã¢â€â€š
-Ã¢â€â€š  (Controllers, JPA, Config)         Ã¢â€â€š
-Ã¢â€â€š                                     Ã¢â€â€š
-Ã¢â€â€š      Ã¢â€Å’Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Â       Ã¢â€â€š
-Ã¢â€â€š      Ã¢â€â€š     Application      Ã¢â€â€š       Ã¢â€â€š
-Ã¢â€â€š      Ã¢â€â€š  (Use Cases, Ports)  Ã¢â€â€š       Ã¢â€â€š
-Ã¢â€â€š      Ã¢â€â€š                      Ã¢â€â€š       Ã¢â€â€š
-Ã¢â€â€š      Ã¢â€â€š   Ã¢â€Å’Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Â   Ã¢â€â€š       Ã¢â€â€š
-Ã¢â€â€š      Ã¢â€â€š   Ã¢â€â€š    Domain    Ã¢â€â€š   Ã¢â€â€š       Ã¢â€â€š
-Ã¢â€â€š      Ã¢â€â€š   Ã¢â€â€š  (pure Java) Ã¢â€â€š   Ã¢â€â€š       Ã¢â€â€š
-Ã¢â€â€š      Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Ëœ   Ã¢â€â€š       Ã¢â€â€š
-Ã¢â€â€š      Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Ëœ       Ã¢â€â€š
-Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€â‚¬Ã¢â€Ëœ
+```text
++-------------------------------------+
+|          Infrastructure             |
+|  (Controllers, JPA, Config)         |
+|                                     |
+|      +----------------------+       |
+|      |     Application      |       |
+|      |  (Use Cases, Ports)  |       |
+|      |                      |       |
+|      |   +--------------+   |       |
+|      |   |    Domain    |   |       |
+|      |   |  (pure Java) |   |       |
+|      |   +--------------+   |       |
+|      +----------------------+       |
++-------------------------------------+
 ```
 
-- **Domain** Ã¢â‚¬â€ pure Java, no framework dependencies, owns all business rules
-- **Application** Ã¢â‚¬â€ use cases, ports (interfaces), commands, DTOs
-- **Infrastructure** Ã¢â‚¬â€ JPA entities, Spring Data, REST controllers, mappers
+- **Domain** -- pure Java, no framework dependencies, owns all business rules
+- **Application** -- use cases, ports (interfaces), commands, DTOs
+- **Infrastructure** -- JPA entities, Spring Data, REST controllers, mappers
 
 See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed design decisions.
 
@@ -94,10 +94,10 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for detailed design decisions.
 
 ## Order State Machine
 
-```
-CREATED Ã¢â€ â€™ PROCESSING Ã¢â€ â€™ PAID
-CREATED Ã¢â€ â€™ PROCESSING Ã¢â€ â€™ FAILED
-CREATED Ã¢â€ â€™ CANCELLED
+```text
+CREATED -> PROCESSING -> PAID
+CREATED -> PROCESSING -> FAILED
+CREATED -> CANCELLED
 ```
 
 State transitions are enforced by the domain model.
@@ -233,9 +233,9 @@ Invoke-RestMethod -Method Get -Uri "http://localhost:8080/orders/summary" | Conv
 
 Current test suite: **19 tests, 0 failures**
 
-- `OrderTest` Ã¢â‚¬â€ 7 tests, all state transitions including invalid ones
-- `MoneyTest` Ã¢â‚¬â€ 8 tests, value object invariants and edge cases
-- `ProcessPaymentUseCaseTest` Ã¢â‚¬â€ 3 tests with mocked ports
+- `OrderTest` -- 7 tests, all state transitions including invalid ones
+- `MoneyTest` -- 8 tests, value object invariants and edge cases
+- `ProcessPaymentUseCaseTest` -- 3 tests with mocked ports
 
 ---
 
@@ -244,7 +244,7 @@ Current test suite: **19 tests, 0 failures**
 The `infrastructure/adapter/out/events` package is ready for domain event publishing.
 
 When a message broker is integrated, events like `OrderPaidEvent`, `OrderFailedEvent`
-and `OrderCancelledEvent` will be published after state transitions Ã¢â‚¬â€ following
+and `OrderCancelledEvent` will be published after state transitions -- following
 either direct publish or the Outbox pattern.
 
 No domain changes required to add this.
@@ -253,32 +253,67 @@ No domain changes required to add this.
 
 ## Project Structure
 
-```
+```text
 src/main/java/com/saquero/ordercore
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ domain
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ model          Order, Customer, Payment, OrderStatus, PaymentStatus
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ valueobject    Money
-Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ exception      OrderDomainException, InvalidOrderStateTransitionException
-Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ application
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ port/in        Use case interfaces
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ port/out       Repository port interfaces
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ command        CreateOrderCommand, ProcessPaymentCommand...
-Ã¢â€â€š   Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ dto            OrderResponse, PaymentResponse, PageResponse...
-Ã¢â€â€š   Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ usecase        Use case implementations
-Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ infrastructure
-    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ adapter/in/web      REST controllers, request DTOs
-    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ adapter/out/persistence  JPA entities, repositories, mappers
-    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ adapter/out/events  Prepared for Kafka
-    Ã¢â€Å“Ã¢â€â‚¬Ã¢â€â‚¬ config              OpenAPI, CorrelationId filter, Dev initializer
-    Ã¢â€â€Ã¢â€â‚¬Ã¢â€â‚¬ exception           GlobalExceptionHandler, ApiError
++-- domain
+|   +-- model          Order, Customer, Payment, OrderStatus, PaymentStatus
+|   +-- valueobject    Money
+|   +-- exception      OrderDomainException, InvalidOrderStateTransitionException
++-- application
+|   +-- port/in        Use case interfaces
+|   +-- port/out       Repository port interfaces
+|   +-- command        CreateOrderCommand, ProcessPaymentCommand...
+|   +-- dto            OrderResponse, PaymentResponse, PageResponse...
+|   +-- usecase        Use case implementations
++-- infrastructure
+    +-- adapter/in/web          REST controllers, request DTOs
+    +-- adapter/out/persistence JPA entities, repositories, mappers
+    +-- adapter/out/events      Prepared for Kafka
+    +-- config                  OpenAPI, CorrelationId filter, Dev initializer
+    +-- exception               GlobalExceptionHandler, ApiError
 ```
 
 ---
 
 ## Part of the Saquero Backend Ecosystem
 
-| Project                                                 | Stack            | Description                   |
-| ------------------------------------------------------- | ---------------- | ----------------------------- |
-| [SaqueroCloud](https://github.com/Saquero/SaqueroCloud) | .NET 8 + React   | SaaS admin platform, JWT auth |
-| SaqueroOrderCore                                                | Java 21 + Spring Boot 3 | Order lifecycle backend, DDD, Hexagonal                |
-| [SaqueroGateway](https://github.com/Saquero/SaqueroGateway)     | .NET 8                  | API Gateway -- single entry point                      |
+| Project                                                     | Stack                   | Description                                            |
+| ----------------------------------------------------------- | ----------------------- | ------------------------------------------------------ |
+| [SaqueroCloud](https://github.com/Saquero/SaqueroCloud)     | .NET 8 + React          | SaaS admin platform, JWT auth, subscription management |
+| SaqueroOrderCore                                            | Java 21 + Spring Boot 3 | Order lifecycle backend, DDD, Hexagonal                |
+| [SaqueroJobs](https://github.com/Saquero/SaqueroJobs)       | .NET 8                  | Background job processing engine                       |
+| [SaqueroGateway](https://github.com/Saquero/SaqueroGateway) | .NET 8                  | API Gateway -- single entry point                      |
+
+---
+
+## Ecosystem Health
+
+| Service          | Port | Health           |
+| ---------------- | ---- | ---------------- |
+| SaqueroGateway   | 5100 | /health          |
+| SaqueroCloud     | 5000 | /health          |
+| SaqueroOrderCore | 8080 | /actuator/health |
+| SaqueroJobs      | 5200 | /health          |
+
+---
+
+## Future Improvements
+
+- SaqueroGateway integration
+- Cron expression evaluation
+- Docker Compose for full ecosystem
+- CI/CD pipeline
+
+---
+
+<p align="center">
+  <a href="https://linkedin.com/in/manusaquero">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" />
+  </a>
+  <a href="mailto:manusaquero@gmail.com">
+    <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" />
+  </a>
+  <a href="https://github.com/Saquero">
+    <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" />
+  </a>
+</p>
