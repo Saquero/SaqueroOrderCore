@@ -299,7 +299,6 @@ src/main/java/com/saquero/ordercore
 
 ## Future Improvements
 
-- SaqueroGateway integration
 - Cron expression evaluation
 - Docker Compose for full ecosystem
 - CI/CD pipeline
