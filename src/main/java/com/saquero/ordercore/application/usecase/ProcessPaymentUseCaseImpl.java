@@ -4,6 +4,7 @@ import com.saquero.ordercore.application.command.ProcessPaymentCommand;
 import com.saquero.ordercore.application.dto.PaymentResponse;
 import com.saquero.ordercore.application.port.in.ProcessPaymentUseCase;
 import com.saquero.ordercore.application.port.out.OrderRepositoryPort;
+import com.saquero.ordercore.application.port.out.PaymentGatewayPort;
 import com.saquero.ordercore.application.port.out.PaymentRepositoryPort;
 import com.saquero.ordercore.domain.exception.OrderNotFoundException;
 import com.saquero.ordercore.domain.model.Order;
@@ -20,11 +21,14 @@ public class ProcessPaymentUseCaseImpl implements ProcessPaymentUseCase {
 
     private final OrderRepositoryPort orderRepositoryPort;
     private final PaymentRepositoryPort paymentRepositoryPort;
+    private final PaymentGatewayPort paymentGatewayPort;
 
     public ProcessPaymentUseCaseImpl(OrderRepositoryPort orderRepositoryPort,
-                                     PaymentRepositoryPort paymentRepositoryPort) {
+                                     PaymentRepositoryPort paymentRepositoryPort,
+                                     PaymentGatewayPort paymentGatewayPort) {
         this.orderRepositoryPort = orderRepositoryPort;
         this.paymentRepositoryPort = paymentRepositoryPort;
+        this.paymentGatewayPort = paymentGatewayPort;
     }
 
     @Override
@@ -42,9 +46,12 @@ public class ProcessPaymentUseCaseImpl implements ProcessPaymentUseCase {
                 LocalDateTime.now()
         );
 
-        boolean paymentSucceeded = simulatePayment();
+        PaymentGatewayPort.PaymentResult result = paymentGatewayPort.process(
+                order.getId(),
+                order.getTotalAmount()
+        );
 
-        if (paymentSucceeded) {
+        if (result.success()) {
             payment.markSuccess();
             order.markAsPaid();
         } else {
@@ -63,9 +70,5 @@ public class ProcessPaymentUseCaseImpl implements ProcessPaymentUseCase {
                 saved.getAmount().getCurrency(),
                 saved.getProcessedAt()
         );
-    }
-
-    private boolean simulatePayment() {
-        return Math.random() > 0.2;
     }
 }
