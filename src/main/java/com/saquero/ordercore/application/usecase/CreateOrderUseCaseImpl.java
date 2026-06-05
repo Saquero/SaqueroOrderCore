@@ -9,6 +9,8 @@ import com.saquero.ordercore.domain.exception.OrderDomainException;
 import com.saquero.ordercore.domain.model.Customer;
 import com.saquero.ordercore.domain.model.Order;
 import com.saquero.ordercore.domain.valueobject.Money;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +20,8 @@ import java.util.UUID;
 @Service
 @Transactional
 public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
+
+    private static final Logger log = LoggerFactory.getLogger(CreateOrderUseCaseImpl.class);
 
     private final OrderRepositoryPort orderRepositoryPort;
     private final CustomerRepositoryPort customerRepositoryPort;
@@ -30,6 +34,9 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
 
     @Override
     public OrderResponse execute(CreateOrderCommand command) {
+        log.debug("Creating order for customerId={} amount={} currency={}",
+                command.getCustomerId(), command.getTotalAmount(), command.getCurrency());
+
         Customer customer = customerRepositoryPort
                 .findById(command.getCustomerId())
                 .orElseThrow(() -> new OrderDomainException(
@@ -45,6 +52,10 @@ public class CreateOrderUseCaseImpl implements CreateOrderUseCase {
         );
 
         Order saved = orderRepositoryPort.save(order);
+
+        log.info("Order created orderId={} customerId={} amount={}",
+                saved.getId(), saved.getCustomerId(), saved.getTotalAmount());
+
         return toResponse(saved);
     }
 
