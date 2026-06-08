@@ -21,13 +21,13 @@ import java.io.IOException;
  */
 @Component
 @Order(2)
-public class RequestContextFilter extends OncePerRequestFilter {
+public class GatewayContextFilter extends OncePerRequestFilter {
 
-    private static final String HEADER_USER_ID     = "X-User-Id";
-    private static final String HEADER_USER_EMAIL  = "X-User-Email";
-    private static final String HEADER_USER_ROLE   = "X-User-Role";
-    private static final String HEADER_USER_PLAN   = "X-User-Plan";
-    private static final String HEADER_TENANT_ID   = "X-Tenant-Id";
+    private static final String HEADER_USER_ID    = "X-User-Id";
+    private static final String HEADER_USER_EMAIL = "X-User-Email";
+    private static final String HEADER_USER_ROLE  = "X-User-Role";
+    private static final String HEADER_USER_PLAN  = "X-User-Plan";
+    private static final String HEADER_TENANT_ID  = "X-Tenant-Id";
 
     private static final String MDC_USER_ID    = "userId";
     private static final String MDC_USER_EMAIL = "userEmail";
