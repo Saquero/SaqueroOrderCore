@@ -1,11 +1,11 @@
 package com.saquero.ordercore.application.usecase;
 
 import com.saquero.ordercore.application.dto.OrderResponse;
+import com.saquero.ordercore.application.mapper.OrderResponseMapper;
 import com.saquero.ordercore.application.port.in.GetOrdersByCustomerUseCase;
 import com.saquero.ordercore.application.port.out.CustomerRepositoryPort;
 import com.saquero.ordercore.application.port.out.OrderRepositoryPort;
 import com.saquero.ordercore.domain.exception.OrderDomainException;
-import com.saquero.ordercore.domain.model.Order;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +18,14 @@ public class GetOrdersByCustomerUseCaseImpl implements GetOrdersByCustomerUseCas
 
     private final OrderRepositoryPort orderRepositoryPort;
     private final CustomerRepositoryPort customerRepositoryPort;
+    private final OrderResponseMapper mapper;
 
     public GetOrdersByCustomerUseCaseImpl(OrderRepositoryPort orderRepositoryPort,
-                                          CustomerRepositoryPort customerRepositoryPort) {
+                                          CustomerRepositoryPort customerRepositoryPort,
+                                          OrderResponseMapper mapper) {
         this.orderRepositoryPort = orderRepositoryPort;
         this.customerRepositoryPort = customerRepositoryPort;
+        this.mapper = mapper;
     }
 
     @Override
@@ -33,19 +36,7 @@ public class GetOrdersByCustomerUseCaseImpl implements GetOrdersByCustomerUseCas
 
         return orderRepositoryPort.findByCustomerId(customerId)
                 .stream()
-                .map(this::toResponse)
+                .map(mapper::toOrderResponse)
                 .toList();
-    }
-
-    private OrderResponse toResponse(Order order) {
-        return new OrderResponse(
-                order.getId(),
-                order.getCustomerId(),
-                order.getStatus().name(),
-                order.getTotalAmount().getAmount(),
-                order.getTotalAmount().getCurrency(),
-                order.getCreatedAt(),
-                order.getUpdatedAt()
-        );
     }
 }

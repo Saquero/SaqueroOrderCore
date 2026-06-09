@@ -2,6 +2,7 @@ package com.saquero.ordercore.application.usecase;
 
 import com.saquero.ordercore.application.command.ProcessPaymentCommand;
 import com.saquero.ordercore.application.dto.PaymentResponse;
+import com.saquero.ordercore.application.mapper.OrderResponseMapper;
 import com.saquero.ordercore.application.port.out.OrderRepositoryPort;
 import com.saquero.ordercore.application.port.out.PaymentGatewayPort;
 import com.saquero.ordercore.application.port.out.PaymentRepositoryPort;
@@ -46,6 +47,9 @@ class ProcessPaymentUseCaseTest {
     @Mock
     private PaymentGatewayPort paymentGatewayPort;
 
+    @Mock
+    private OrderResponseMapper mapper;
+
     @InjectMocks
     private ProcessPaymentUseCaseImpl useCase;
 
@@ -75,6 +79,9 @@ class ProcessPaymentUseCaseTest {
                     .thenReturn(new PaymentGatewayPort.PaymentResult(true, "REF-001"));
             when(paymentRepositoryPort.save(any())).thenAnswer(i -> i.getArgument(0));
             when(orderRepositoryPort.save(any())).thenAnswer(i -> i.getArgument(0));
+            when(mapper.toPaymentResponse(any())).thenReturn(
+                    new PaymentResponse(UUID.randomUUID(), orderId, PaymentStatus.SUCCESS.name(),
+                            BigDecimal.TEN, "EUR", LocalDateTime.now()));
 
             useCase.execute(new ProcessPaymentCommand(orderId));
 
@@ -91,6 +98,9 @@ class ProcessPaymentUseCaseTest {
                     .thenReturn(new PaymentGatewayPort.PaymentResult(true, "REF-001"));
             when(paymentRepositoryPort.save(any())).thenAnswer(i -> i.getArgument(0));
             when(orderRepositoryPort.save(any())).thenAnswer(i -> i.getArgument(0));
+            when(mapper.toPaymentResponse(any())).thenReturn(
+                    new PaymentResponse(UUID.randomUUID(), orderId, PaymentStatus.SUCCESS.name(),
+                            BigDecimal.TEN, "EUR", LocalDateTime.now()));
 
             PaymentResponse response = useCase.execute(new ProcessPaymentCommand(orderId));
 
@@ -110,6 +120,9 @@ class ProcessPaymentUseCaseTest {
                     .thenReturn(new PaymentGatewayPort.PaymentResult(false, "REF-002"));
             when(paymentRepositoryPort.save(any())).thenAnswer(i -> i.getArgument(0));
             when(orderRepositoryPort.save(any())).thenAnswer(i -> i.getArgument(0));
+            when(mapper.toPaymentResponse(any())).thenReturn(
+                    new PaymentResponse(UUID.randomUUID(), orderId, PaymentStatus.FAILED.name(),
+                            BigDecimal.TEN, "EUR", LocalDateTime.now()));
 
             useCase.execute(new ProcessPaymentCommand(orderId));
 
@@ -126,6 +139,9 @@ class ProcessPaymentUseCaseTest {
                     .thenReturn(new PaymentGatewayPort.PaymentResult(false, "REF-002"));
             when(paymentRepositoryPort.save(any())).thenAnswer(i -> i.getArgument(0));
             when(orderRepositoryPort.save(any())).thenAnswer(i -> i.getArgument(0));
+            when(mapper.toPaymentResponse(any())).thenReturn(
+                    new PaymentResponse(UUID.randomUUID(), orderId, PaymentStatus.FAILED.name(),
+                            BigDecimal.TEN, "EUR", LocalDateTime.now()));
 
             PaymentResponse response = useCase.execute(new ProcessPaymentCommand(orderId));
 
